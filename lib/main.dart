@@ -1,6 +1,6 @@
 // lib/main.dart
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -37,11 +37,18 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   Map<String, dynamic>? _weatherData;
   String? _errorMessage;
 
-// read compile-time string set with --dart-define
+  // read compile-time string set with --dart-define
   static final String _apiKey =
       const String.fromEnvironment('OPENWEATHER_API_KEY', defaultValue: '');
 
   Future<void> _fetchWeather(String city) async {
+    if (_apiKey.isEmpty) {
+      setState(() {
+        _errorMessage = 'API key not provided. Start the app with --dart-define=OPENWEATHER_API_KEY=<your_key>';
+      });
+      return;
+    }
+
     if (city.trim().isEmpty) {
       setState(() => _errorMessage = 'Please enter a city name.');
       return;
@@ -85,17 +92,15 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
           _errorMessage = 'Server error (${response.statusCode}). Try again later.';
         });
       }
-    } on SocketException catch (_) {
-      setState(() {
-        _errorMessage = 'Network error. Please check your internet connection.';
-      });
     } on FormatException catch (_) {
       setState(() {
         _errorMessage = 'Bad response format.';
       });
     } on Exception catch (e) {
       setState(() {
-        _errorMessage = 'Unexpected error: $e';
+        _errorMessage = kIsWeb
+            ? 'Network error (web). Check connection or CORS. ($e)'
+            : 'Network error. Please check your internet connection. ($e)';
       });
     } finally {
       setState(() {
