@@ -89,8 +89,9 @@ Running from Android Studio
 4. To inject the API key when running from Android Studio, set the VM/Flutter run arguments in run configurations:
    - Edit Configurations → Additional run args (or in the run configuration's "Dart entrypoint arguments") add:
      `--dart-define=OPENWEATHER_API_KEY=YOUR_REAL_KEY`
-Usage:
-![weather](https://github.com/user-attachments/assets/ccbc83b7-afcd-49bf-b150-2c985da03da1)
+
+Usage
+  ![weather](https://github.com/user-attachments/assets/ccbc83b7-afcd-49bf-b150-2c985da03da1)
 
 
 Web compatibility
